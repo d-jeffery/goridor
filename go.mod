@@ -2,7 +2,10 @@ module goridor
 
 go 1.22rc1
 
-require github.com/hajimehoshi/ebiten/v2 v2.6.3
+require (
+	github.com/beefsack/go-astar v0.0.0-20200827232313-4ecf9e304482
+	github.com/hajimehoshi/ebiten/v2 v2.6.3
+)
 
 require (
 	github.com/ebitengine/purego v0.5.0 // indirect
