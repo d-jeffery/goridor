@@ -2,10 +2,11 @@ package goridor
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
 const (
-	tileSize   = 80
+	tileSize   = 42
 	tileMargin = 4
 )
 
@@ -45,22 +46,14 @@ func (b *Board) Init() {
 }
 
 func (b *Board) Draw(boardImage *ebiten.Image) {
-	boardImage.Fill(frameColor)
 
-	//for j := 0; j < b.size; j++ {
-	//	for i := 0; i < b.size; i++ {
-	//		//v := 0
-	//		op := &ebiten.DrawImageOptions{}
-	//		x := i*tileSize + (i+1)*tileMargin
-	//		y := j*tileSize + (j+1)*tileMargin
-	//		op.GeoM.Translate(float64(x), float64(y))
-	//		//op.ColorScale.ScaleWithColor(v)
-	//		boardImage.DrawImage(tileImage, op)
-	//	}
-	//}
-	//for t := range b.tiles {
-	//	t.Draw(boardImage)
-	//}
+	vector.DrawFilledRect(boardImage, float32(0), float32(0), float32(tileSize*b.size), float32(tileSize*b.size), frameColor, false)
+
+	for j := 0; j < b.size; j++ {
+		for i := 0; i < b.size; i++ {
+			vector.StrokeRect(boardImage, float32(i*tileSize), float32(j*tileSize), float32(tileSize), float32(tileSize), tileMargin, backgroundColor, false)
+		}
+	}
 }
 
 func (b *Board) Size() (int, int) {
