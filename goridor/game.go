@@ -17,6 +17,7 @@ type Game struct {
 }
 
 func (g *Game) Update() error {
+
 	return nil
 }
 
@@ -30,8 +31,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 	sw, sh := screen.Bounds().Dx(), screen.Bounds().Dy()
 	bw, bh := g.boardImage.Bounds().Dx(), g.boardImage.Bounds().Dy()
-	x := (sw-bw)/2 + 21
-	y := (sh-bh)/2 + 21
+	x := (sw-bw)/2 + tileSize/2
+	y := (sh-bh)/2 + tileSize/2
 	op.GeoM.Translate(float64(x), float64(y))
 	screen.DrawImage(g.boardImage, op)
 	ebitenutil.DebugPrint(screen, "Hello, World")

@@ -2,13 +2,6 @@ package goridor
 
 import "github.com/beefsack/go-astar"
 
-const (
-	UP = iota
-	RIGHT
-	DOWN
-	LEFT
-)
-
 type Path struct {
 	from *Tile
 	to   *Tile

@@ -13,6 +13,7 @@ const (
 type Board struct {
 	size  int
 	tiles map[int]map[int]*Tile
+	pawns [4]*Pawn
 }
 
 func (b *Board) Init() {
@@ -54,6 +55,13 @@ func (b *Board) Draw(boardImage *ebiten.Image) {
 			vector.StrokeRect(boardImage, float32(i*tileSize), float32(j*tileSize), float32(tileSize), float32(tileSize), tileMargin, backgroundColor, false)
 		}
 	}
+
+	for _, p := range b.pawns {
+		if p == nil {
+			continue
+		}
+		p.Draw(boardImage)
+	}
 }
 
 func (b *Board) Size() (int, int) {
@@ -73,6 +81,7 @@ func NewBoard(size int) (*Board, error) {
 	b := &Board{
 		size:  size,
 		tiles: map[int]map[int]*Tile{},
+		pawns: [4]*Pawn{{4, 8, 10, player1}, {4, 0, 10, player2}, nil, nil},
 	}
 	b.Init()
 	var err error
