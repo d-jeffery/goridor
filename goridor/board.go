@@ -31,16 +31,16 @@ func (b *Board) Init() {
 		for i := 0; i < b.size; i++ {
 			tile := b.Tile(i, j)
 			if i > 0 {
-				tile.neighbor[UP] = b.Tile(i-1, j)
+				tile.neighbor[UP] = b.Tile(i, j-1)
 			}
 			if j < b.size {
-				tile.neighbor[RIGHT] = b.Tile(i, j+1)
+				tile.neighbor[RIGHT] = b.Tile(i+1, j)
 			}
 			if i < b.size {
-				tile.neighbor[DOWN] = b.Tile(i+1, j)
+				tile.neighbor[DOWN] = b.Tile(i, j+1)
 			}
 			if j > 0 {
-				tile.neighbor[LEFT] = b.Tile(i, j-1)
+				tile.neighbor[LEFT] = b.Tile(i-1, j)
 			}
 		}
 	}

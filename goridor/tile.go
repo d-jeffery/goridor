@@ -1,6 +1,8 @@
 package goridor
 
-import "github.com/beefsack/go-astar"
+import (
+	"github.com/beefsack/go-astar"
+)
 
 type Path struct {
 	from *Tile
@@ -21,18 +23,30 @@ func NewTile(x, y int) *Tile {
 }
 
 func (t *Tile) Up() *Tile {
+	if t.neighbor[UP] == nil {
+		return nil
+	}
 	return t.neighbor[UP]
 }
 
 func (t *Tile) Right() *Tile {
+	if t.neighbor[RIGHT] == nil {
+		return nil
+	}
 	return t.neighbor[RIGHT]
 }
 
 func (t *Tile) Down() *Tile {
+	if t.neighbor[DOWN] == nil {
+		return nil
+	}
 	return t.neighbor[DOWN]
 }
 
 func (t *Tile) Left() *Tile {
+	if t.neighbor[LEFT] == nil {
+		return nil
+	}
 	return t.neighbor[LEFT]
 }
 
