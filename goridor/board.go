@@ -3,12 +3,18 @@ package goridor
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
+	"image/color"
 )
 
 const (
 	tileSize   = 42
 	tileMargin = 4
 )
+
+type Pawn struct {
+	x, y, size int
+	pawnColor  color.RGBA
+}
 
 type Board struct {
 	size  int
@@ -50,6 +56,14 @@ func (b *Board) Draw(boardImage *ebiten.Image) {
 
 	vector.DrawFilledRect(boardImage, float32(0), float32(0), float32(tileSize*b.size), float32(tileSize*b.size), frameColor, false)
 
+	p1Location := b.tiles[b.pawns[0].x][b.pawns[0].y]
+	for _, moves := range p1Location.neighbor {
+		if moves == nil {
+			continue
+		}
+		vector.DrawFilledRect(boardImage, float32(moves.x*tileSize), float32(moves.y*tileSize), float32(tileSize), float32(tileSize), neighbourTiles, false)
+	}
+
 	for j := 0; j < b.size; j++ {
 		for i := 0; i < b.size; i++ {
 			vector.StrokeRect(boardImage, float32(i*tileSize), float32(j*tileSize), float32(tileSize), float32(tileSize), tileMargin, backgroundColor, false)
@@ -60,7 +74,7 @@ func (b *Board) Draw(boardImage *ebiten.Image) {
 		if p == nil {
 			continue
 		}
-		p.Draw(boardImage)
+		vector.DrawFilledCircle(boardImage, float32((p.x*tileSize)+(tileSize/2)), float32((p.y*tileSize)+(tileSize/2)), float32(p.size), p.pawnColor, false)
 	}
 }
 
