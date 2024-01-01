@@ -104,3 +104,9 @@ func NewBoard(size int) (*Board, error) {
 	}
 	return b, nil
 }
+
+func (b *Board) MovePlayer(playerNo int, tile *Tile) {
+	println(tile)
+	b.pawns[playerNo].x = tile.x
+	b.pawns[playerNo].y = tile.y
+}

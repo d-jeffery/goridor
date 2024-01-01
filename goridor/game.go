@@ -3,6 +3,7 @@ package goridor
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 const (
@@ -17,6 +18,18 @@ type Game struct {
 }
 
 func (g *Game) Update() error {
+	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButton0) {
+		cx, cy := ebiten.CursorPosition()
+
+		boardX, boardY := g.board.Size()
+
+		mx := ((ScreenWidth - boardX) / 2) + tileSize/2
+		my := ((ScreenHeight - boardY) / 2) + tileSize/2
+
+		selected := g.board.Tile((cx-mx)/tileSize, (cy-my)/tileSize)
+		g.board.MovePlayer(0, selected)
+
+	}
 
 	return nil
 }
