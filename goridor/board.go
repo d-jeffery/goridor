@@ -12,8 +12,9 @@ const (
 )
 
 type Pawn struct {
-	x, y, size int
-	pawnColor  color.RGBA
+	size      int
+	tile      *Tile
+	pawnColor color.RGBA
 }
 
 type Board struct {
@@ -50,13 +51,16 @@ func (b *Board) Init() {
 			}
 		}
 	}
+
+	b.pawns[0] = &Pawn{10, b.tiles[4][8], player1}
+	b.pawns[1] = &Pawn{10, b.tiles[4][0], player2}
 }
 
 func (b *Board) Draw(boardImage *ebiten.Image, playerTurn int) {
 
 	vector.DrawFilledRect(boardImage, float32(0), float32(0), float32(tileSize*b.size), float32(tileSize*b.size), frameColor, false)
 
-	location := b.tiles[b.pawns[playerTurn].x][b.pawns[playerTurn].y]
+	location := b.pawns[playerTurn].tile
 	for _, moves := range location.neighbor {
 		if moves == nil {
 			continue
@@ -74,7 +78,7 @@ func (b *Board) Draw(boardImage *ebiten.Image, playerTurn int) {
 		if p == nil {
 			continue
 		}
-		vector.DrawFilledCircle(boardImage, float32((p.x*tileSize)+(tileSize/2)), float32((p.y*tileSize)+(tileSize/2)), float32(p.size), p.pawnColor, false)
+		vector.DrawFilledCircle(boardImage, float32((p.tile.x*tileSize)+(tileSize/2)), float32((p.tile.y*tileSize)+(tileSize/2)), float32(p.size), p.pawnColor, false)
 	}
 }
 
@@ -95,7 +99,7 @@ func NewBoard(size int) (*Board, error) {
 	b := &Board{
 		size:  size,
 		tiles: map[int]map[int]*Tile{},
-		pawns: [4]*Pawn{{4, 8, 10, player1}, {4, 0, 10, player2}, nil, nil},
+		pawns: [4]*Pawn{}, //[4]*Pawn{{4, 8, 10, player1}, {4, 0, 10, player2}, nil, nil},
 	}
 	b.Init()
 	var err error
@@ -105,12 +109,23 @@ func NewBoard(size int) (*Board, error) {
 	return b, nil
 }
 
+func (b *Board) IsOccupied(tile *Tile) bool {
+	for _, p := range b.pawns {
+		if p == nil {
+			continue
+		}
+		if p.tile == tile {
+			return true
+		}
+	}
+	return false
+}
+
 func (b *Board) MovePlayer(playerNo int, tile *Tile) bool {
-	location := b.tiles[b.pawns[playerNo].x][b.pawns[playerNo].y]
+	location := b.pawns[playerNo].tile
 	for _, n := range location.neighbor {
-		if n == tile {
-			b.pawns[playerNo].x = tile.x
-			b.pawns[playerNo].y = tile.y
+		if n == tile && !b.IsOccupied(tile) {
+			b.pawns[playerNo].tile = tile
 			return true
 		}
 	}
