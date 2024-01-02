@@ -52,12 +52,12 @@ func (b *Board) Init() {
 	}
 }
 
-func (b *Board) Draw(boardImage *ebiten.Image) {
+func (b *Board) Draw(boardImage *ebiten.Image, playerTurn int) {
 
 	vector.DrawFilledRect(boardImage, float32(0), float32(0), float32(tileSize*b.size), float32(tileSize*b.size), frameColor, false)
 
-	p1Location := b.tiles[b.pawns[0].x][b.pawns[0].y]
-	for _, moves := range p1Location.neighbor {
+	location := b.tiles[b.pawns[playerTurn].x][b.pawns[playerTurn].y]
+	for _, moves := range location.neighbor {
 		if moves == nil {
 			continue
 		}
@@ -105,8 +105,14 @@ func NewBoard(size int) (*Board, error) {
 	return b, nil
 }
 
-func (b *Board) MovePlayer(playerNo int, tile *Tile) {
-	println(tile)
-	b.pawns[playerNo].x = tile.x
-	b.pawns[playerNo].y = tile.y
+func (b *Board) MovePlayer(playerNo int, tile *Tile) bool {
+	location := b.tiles[b.pawns[playerNo].x][b.pawns[playerNo].y]
+	for _, n := range location.neighbor {
+		if n == tile {
+			b.pawns[playerNo].x = tile.x
+			b.pawns[playerNo].y = tile.y
+			return true
+		}
+	}
+	return false
 }
