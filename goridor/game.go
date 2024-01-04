@@ -2,7 +2,7 @@ package goridor
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 const (
@@ -14,9 +14,14 @@ const (
 type Game struct {
 	board      *Board
 	boardImage *ebiten.Image
+	turn       int
 }
 
 func (g *Game) Update() error {
+	if g.doPlayerMove(g.turn) {
+		g.turn++
+		g.turn %= 2 // TODO: make dynamic
+	}
 
 	return nil
 }
@@ -26,7 +31,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		g.boardImage = ebiten.NewImage(g.board.Size())
 	}
 	screen.Fill(backgroundColor)
-	g.board.Draw(g.boardImage)
+	g.board.Draw(g.boardImage, g.turn)
 
 	op := &ebiten.DrawImageOptions{}
 	sw, sh := screen.Bounds().Dx(), screen.Bounds().Dy()
@@ -35,7 +40,6 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	y := (sh-bh)/2 + tileSize/2
 	op.GeoM.Translate(float64(x), float64(y))
 	screen.DrawImage(g.boardImage, op)
-	ebitenutil.DebugPrint(screen, "Hello, World")
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
@@ -46,8 +50,26 @@ func NewGame() (*Game, error) {
 	g := &Game{}
 	var err error
 	g.board, err = NewBoard(boardSize)
+	g.turn = 0
 	if err != nil {
 		return nil, err
 	}
 	return g, nil
+}
+
+func (g *Game) doPlayerMove(turn int) bool {
+	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButton0) {
+		cx, cy := ebiten.CursorPosition()
+
+		boardX, boardY := g.board.Size()
+
+		mx := ((ScreenWidth - boardX) / 2) + tileSize/2
+		my := ((ScreenHeight - boardY) / 2) + tileSize/2
+
+		selected := g.board.Tile((cx-mx)/tileSize, (cy-my)/tileSize)
+		if selected != nil {
+			return g.board.MovePlayer(turn, selected)
+		}
+	}
+	return false
 }
