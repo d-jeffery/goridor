@@ -13,12 +13,14 @@ type Path struct {
 type Tile struct {
 	x, y     int
 	neighbor [4]*Tile
+	occupied bool
 }
 
 func NewTile(x, y int) *Tile {
 	return &Tile{
-		x: x,
-		y: y,
+		x:        x,
+		y:        y,
+		occupied: false,
 	}
 }
 
@@ -51,12 +53,13 @@ func (t *Tile) Left() *Tile {
 }
 
 func (t *Tile) PathNeighbors() []astar.Pather {
-	return []astar.Pather{
-		t.Up(),
-		t.Right(),
-		t.Down(),
-		t.Left(),
+	var moves []astar.Pather
+	for _, move := range t.neighbor {
+		if move != nil {
+			moves = append(moves, move)
+		}
 	}
+	return moves
 }
 
 func (t *Tile) PathNeighborCost(to astar.Pather) float64 {

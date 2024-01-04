@@ -1,8 +1,10 @@
 package goridor
 
 import (
+	"github.com/beefsack/go-astar"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"log"
 )
 
 const (
@@ -58,18 +60,31 @@ func NewGame() (*Game, error) {
 }
 
 func (g *Game) doPlayerMove(turn int) bool {
-	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButton0) {
-		cx, cy := ebiten.CursorPosition()
+	g.board.pawns[turn].tile.occupied = false
 
-		boardX, boardY := g.board.Size()
+	if g.board.pawns[turn].human {
+		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButton0) {
+			cx, cy := ebiten.CursorPosition()
 
-		mx := ((ScreenWidth - boardX) / 2) + tileSize/2
-		my := ((ScreenHeight - boardY) / 2) + tileSize/2
+			boardX, boardY := g.board.Size()
 
-		selected := g.board.Tile((cx-mx)/tileSize, (cy-my)/tileSize)
-		if selected != nil {
-			return g.board.MovePlayer(turn, selected)
+			mx := ((ScreenWidth - boardX) / 2) + tileSize/2
+			my := ((ScreenHeight - boardY) / 2) + tileSize/2
+
+			selected := g.board.Tile((cx-mx)/tileSize, (cy-my)/tileSize)
+			if selected != nil {
+				return g.board.MovePlayer(turn, selected)
+			}
+		}
+	} else {
+		path, _, found := astar.Path(g.board.Tile(0, 0), g.board.pawns[turn].tile)
+		if !found {
+			log.Println("Could not find path")
+			return false
+		} else {
+			return g.board.MovePlayer(turn, path[1].(*Tile))
 		}
 	}
+	g.board.pawns[turn].tile.occupied = true
 	return false
 }
