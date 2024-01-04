@@ -15,6 +15,7 @@ type Pawn struct {
 	size      int
 	tile      *Tile
 	pawnColor color.RGBA
+	human     bool
 }
 
 type Board struct {
@@ -52,8 +53,8 @@ func (b *Board) Init() {
 		}
 	}
 
-	b.pawns[0] = &Pawn{10, b.tiles[4][8], player1}
-	b.pawns[1] = &Pawn{10, b.tiles[4][0], player2}
+	b.pawns[0] = &Pawn{10, b.tiles[4][8], player1, true}
+	b.pawns[1] = &Pawn{10, b.tiles[4][0], player2, false}
 }
 
 func (b *Board) Draw(boardImage *ebiten.Image, playerTurn int) {
