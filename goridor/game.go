@@ -77,7 +77,7 @@ func (g *Game) doPlayerMove(turn int) bool {
 			}
 		}
 	} else {
-		path, _, found := astar.Path(g.board.Tile(0, 0), g.board.pawns[turn].tile)
+		path, _, found := astar.Path(g.board.Tile(4, 8), g.board.pawns[turn].tile)
 		if !found {
 			log.Println("Could not find path")
 			return false

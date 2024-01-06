@@ -4,6 +4,13 @@ import (
 	"github.com/beefsack/go-astar"
 )
 
+const (
+	UP = iota
+	RIGHT
+	DOWN
+	LEFT
+)
+
 type Path struct {
 	from *Tile
 	to   *Tile
@@ -24,32 +31,27 @@ func NewTile(x, y int) *Tile {
 	}
 }
 
-func (t *Tile) Up() *Tile {
-	if t.neighbor[UP] == nil {
+func (t *Tile) Move(dir int) *Tile {
+	if t.neighbor[dir] == nil {
 		return nil
 	}
-	return t.neighbor[UP]
+	return t.neighbor[dir]
+}
+
+func (t *Tile) Up() *Tile {
+	return t.Move(UP)
 }
 
 func (t *Tile) Right() *Tile {
-	if t.neighbor[RIGHT] == nil {
-		return nil
-	}
-	return t.neighbor[RIGHT]
+	return t.Move(RIGHT)
 }
 
 func (t *Tile) Down() *Tile {
-	if t.neighbor[DOWN] == nil {
-		return nil
-	}
-	return t.neighbor[DOWN]
+	return t.Move(DOWN)
 }
 
 func (t *Tile) Left() *Tile {
-	if t.neighbor[LEFT] == nil {
-		return nil
-	}
-	return t.neighbor[LEFT]
+	return t.Move(LEFT)
 }
 
 func (t *Tile) PathNeighbors() []astar.Pather {
