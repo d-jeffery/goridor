@@ -20,14 +20,12 @@ type Path struct {
 type Tile struct {
 	x, y     int
 	neighbor [4]*Tile
-	occupied bool
 }
 
 func NewTile(x, y int) *Tile {
 	return &Tile{
-		x:        x,
-		y:        y,
-		occupied: false,
+		x: x,
+		y: y,
 	}
 }
 

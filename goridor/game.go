@@ -52,7 +52,7 @@ func NewGame() (*Game, error) {
 	g := &Game{}
 	var err error
 	g.board, err = NewBoard(boardSize)
-	g.turn = 0
+	g.turn = 1
 	if err != nil {
 		return nil, err
 	}
@@ -60,8 +60,6 @@ func NewGame() (*Game, error) {
 }
 
 func (g *Game) doPlayerMove(turn int) bool {
-	g.board.pawns[turn].tile.occupied = false
-
 	if g.board.pawns[turn].human {
 		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButton0) {
 			cx, cy := ebiten.CursorPosition()
@@ -85,6 +83,5 @@ func (g *Game) doPlayerMove(turn int) bool {
 			return g.board.MovePlayer(turn, path[1].(*Tile))
 		}
 	}
-	g.board.pawns[turn].tile.occupied = true
 	return false
 }

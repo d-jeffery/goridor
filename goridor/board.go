@@ -66,7 +66,11 @@ func (b *Board) Draw(boardImage *ebiten.Image, playerTurn int) {
 		if moves == nil {
 			continue
 		}
-		vector.DrawFilledRect(boardImage, float32(moves.x*tileSize), float32(moves.y*tileSize), float32(tileSize), float32(tileSize), neighbourTiles, false)
+		if b.IsOccupied(moves) {
+			vector.DrawFilledRect(boardImage, float32(moves.x*tileSize), float32(moves.y*tileSize), float32(tileSize), float32(tileSize), blockedTiles, false)
+		} else {
+			vector.DrawFilledRect(boardImage, float32(moves.x*tileSize), float32(moves.y*tileSize), float32(tileSize), float32(tileSize), neighbourTiles, false)
+		}
 	}
 
 	for j := 0; j < b.size; j++ {
