@@ -1,9 +1,5 @@
 package goridor
 
-import (
-	"github.com/beefsack/go-astar"
-)
-
 const (
 	UP = iota
 	RIGHT
@@ -50,22 +46,4 @@ func (t *Tile) Down() *Tile {
 
 func (t *Tile) Left() *Tile {
 	return t.Move(LEFT)
-}
-
-func (t *Tile) PathNeighbors() []astar.Pather {
-	var moves []astar.Pather
-	for _, move := range t.neighbor {
-		if move != nil {
-			moves = append(moves, move)
-		}
-	}
-	return moves
-}
-
-func (t *Tile) PathNeighborCost(to astar.Pather) float64 {
-	return 1
-}
-
-func (t *Tile) PathEstimatedCost(to astar.Pather) float64 {
-	return 1
 }

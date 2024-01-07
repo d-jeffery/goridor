@@ -1,10 +1,10 @@
 package goridor
 
 import (
-	"github.com/beefsack/go-astar"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	"log"
+	"strconv"
 )
 
 const (
@@ -20,6 +20,7 @@ type Game struct {
 }
 
 func (g *Game) Update() error {
+
 	if g.doPlayerMove(g.turn) {
 		g.turn++
 		g.turn %= 2 // TODO: make dynamic
@@ -29,6 +30,7 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
+
 	if g.boardImage == nil {
 		g.boardImage = ebiten.NewImage(g.board.Size())
 	}
@@ -42,6 +44,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	y := (sh-bh)/2 + tileSize/2
 	op.GeoM.Translate(float64(x), float64(y))
 	screen.DrawImage(g.boardImage, op)
+
+	ebitenutil.DebugPrint(screen, strconv.FormatFloat(ebiten.ActualTPS(), 'f', -1, 64))
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
@@ -75,13 +79,11 @@ func (g *Game) doPlayerMove(turn int) bool {
 			}
 		}
 	} else {
-		path, _, found := astar.Path(g.board.Tile(4, 8), g.board.pawns[turn].tile)
-		if !found {
-			log.Println("Could not find path")
-			return false
-		} else {
-			return g.board.MovePlayer(turn, path[1].(*Tile))
+		result := AStar(g.board.pawns[turn].tile, g.board.Tile(4, 8))
+		if len(result) > 0 {
+			return g.board.MovePlayer(turn, result[1])
 		}
 	}
+
 	return false
 }

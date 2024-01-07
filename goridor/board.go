@@ -126,11 +126,11 @@ func (b *Board) IsOccupied(tile *Tile) bool {
 	return false
 }
 
-func (b *Board) MovePlayer(playerNo int, tile *Tile) bool {
-	location := b.pawns[playerNo].tile
+func (b *Board) MovePlayer(turn int, tile *Tile) bool {
+	location := b.pawns[turn].tile
 	for _, n := range location.neighbor {
 		if n == tile && !b.IsOccupied(tile) {
-			b.pawns[playerNo].tile = tile
+			b.pawns[turn].tile = tile
 			return true
 		}
 	}
