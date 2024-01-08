@@ -58,28 +58,20 @@ func (pq *PriorityQueue) contains(tile *Tile) bool {
 }
 
 func distance(a *Tile, b *Tile) float64 {
-	return math.Sqrt(math.Pow(float64(b.x-a.x), 2) + math.Pow(float64(b.y-a.y), 2))
+	return math.Abs(float64(a.x-b.x)) + math.Abs(float64(a.y-b.y)) //math.Sqrt(math.Pow(float64(b.x-a.x), 2) + math.Pow(float64(b.y-a.y), 2))
 }
 
-func reconstructPath(cameFrom map[*Tile]*Tile, current *Tile) []*Tile {
-	fullPath := []*Tile{current}
-	for key, _ := range cameFrom {
-		c := cameFrom[key]
-		fullPath = append(fullPath, c)
-	}
-	return fullPath
-}
-
-func AStar(start *Tile, end *Tile) []*Tile {
+func AStar(start *Tile, end *Tile) (bool, []*Tile) { //map[*Tile]*Tile
 
 	openQueue := make(PriorityQueue, 0)
 	heap.Init(&openQueue)
 
 	cameFrom := make(map[*Tile]*Tile)
+	cameFrom[start] = nil
 	gScore := make(map[*Tile]float64)
 	gScore[start] = 0
 
-	startNode := &Node{tile: start, f: distance(start, end)}
+	startNode := &Node{tile: start, f: 0}
 	heap.Push(&openQueue, startNode)
 
 	for openQueue.Len() > 0 {
@@ -87,8 +79,13 @@ func AStar(start *Tile, end *Tile) []*Tile {
 		current := heap.Pop(&openQueue).(*Node)
 
 		if current.tile == end {
-			println("Found")
-			return reconstructPath(cameFrom, current.tile)
+			c := end
+			var path []*Tile
+			for c != start {
+				path = append([]*Tile{c}, path...)
+				c = cameFrom[c]
+			}
+			return true, path
 		}
 
 		for _, neighbor := range current.tile.neighbor {
@@ -109,7 +106,7 @@ func AStar(start *Tile, end *Tile) []*Tile {
 			}
 		}
 	}
-	return []*Tile{}
+	return false, nil
 }
 
 /*

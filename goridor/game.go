@@ -79,9 +79,9 @@ func (g *Game) doPlayerMove(turn int) bool {
 			}
 		}
 	} else {
-		result := AStar(g.board.pawns[turn].tile, g.board.Tile(4, 8))
-		if len(result) > 0 {
-			return g.board.MovePlayer(turn, result[1])
+		found, result := AStar(g.board.pawns[turn].tile, g.board.Tile(4, 8))
+		if found && len(result) > 0 {
+			return g.board.MovePlayer(turn, result[0])
 		}
 	}
 
